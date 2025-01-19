@@ -1,12 +1,12 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { ChangeEvent, FormEvent, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
-import { loginUser, registerUser } from "../../store/authSlice"
+import { loginUser} from "../../store/authSlice"
 import { Link } from "react-router-dom"
 
 
 function Login(){
     const dispatch = useAppDispatch()
-    const {status,user} = useAppSelector((store)=>store.auth)
+    const {user} = useAppSelector((store)=>store.auth)
 
     const [data,setData] = useState({
         password : "", 

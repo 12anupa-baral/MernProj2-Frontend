@@ -14,6 +14,7 @@ interface IUser{
     email : string | null 
     password : string | null, 
     token : string | null
+
 }
 
 interface IAuthState{
@@ -92,19 +93,19 @@ export function loginUser(data:ILoginUser){
     }
 }
 
-function forgotPassword(data:{email : string}){
-    return async function forgotPasswordThunk(dispatch:AppDispatch){
-        try {
-            const response = await API.post("/auth/forgot-password",data)
-            console.log(response)
-            if(response.status === 200){
-                dispatch(setStatus(Status.SUCCESS))
-            }else{
-                dispatch(setStatus(Status.ERROR))
-            }
-        } catch (error) {
-            console.log(error)
-            dispatch(setStatus(Status.ERROR))
-        }
-    }
-}
+// function forgotPassword(data:{email : string}){
+//     return async function forgotPasswordThunk(dispatch:AppDispatch){
+//         try {
+//             const response = await API.post("/auth/forgot-password",data)
+//             console.log(response)
+//             if(response.status === 200){
+//                 dispatch(setStatus(Status.SUCCESS))
+//             }else{
+//                 dispatch(setStatus(Status.ERROR))
+//             }
+//         } catch (error) {
+//             console.log(error)
+//             dispatch(setStatus(Status.ERROR))
+//         }
+//     }
+// }

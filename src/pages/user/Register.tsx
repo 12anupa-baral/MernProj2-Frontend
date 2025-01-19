@@ -12,7 +12,8 @@ function Register(){
     const [data,setData] = useState({
         username : "", 
         password : "", 
-        email : ""
+        email : "",
+        token:""
     })
     const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
         const {name,value} = e.target 

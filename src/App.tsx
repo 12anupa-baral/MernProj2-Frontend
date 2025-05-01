@@ -8,23 +8,23 @@ import Home from './pages/home/Home'
 import Login from './pages/user/Login'
 import Product from './pages/product/Product'
 import SingleProduct from './pages/single-product/SingleProduct'
+import Cart from "./pages/cart/Cart";
 
 function App() {
-
   return (
-  <Provider store={store}>
-     <BrowserRouter>
-    <Routes>
-    <Route path='/' element={<Home />} />
-    <Route path='/register' element={<Register />}/>
-    <Route path='/login' element={<Login />}/>
-    <Route path='/products' element={<Product />}/>
-    <Route path='/products/:id' element={<SingleProduct />}/>
-    
-    </Routes>
-    </BrowserRouter>
-  </Provider>
-  )
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/products" element={<Product />} />
+          <Route path="/products/:id" element={<SingleProduct />} />
+          <Route path="/cart" element={<Cart />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
+  );
 }
 
 export default App

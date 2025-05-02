@@ -1,97 +1,182 @@
-import { Link } from "react-router-dom"
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { Link } from "react-router-dom";
+import { useAppSelector } from "../../store/hooks";
 import { useEffect, useState } from "react";
-import { fetchCartItems } from "../../store/cartSlice";
+import { CircleX, Menu } from "lucide-react";
+import { LogIn, LogOut, UserPlus } from "lucide-react";
 
-function Navbar() {
-  const reduxToken = useAppSelector((store) => store.auth.user.token);
-  const cartItems = useAppSelector((store) => store.cart.items);
-  const localStorageToken = localStorage.getItem("tokenHoYo");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    setIsLoggedIn(!!localStorageToken || !!reduxToken);
-    // if(reduxToken && localStorageToken){
-    //     setIsLoggedIn(true)
-    // }
-
-    if (isLoggedIn) {
-      dispatch(fetchCartItems());
-    }
-  }, []);
-  console.log(isLoggedIn);
-
+// Mobile Modal Component
+const MobileModal = ({ isOpen, toggleModal, isLoggedIn }: any) => {
   return (
-    <header className="sticky top-0 bg-white shadow">
-      <div className="container flex flex-col sm:flex-row justify-between items-center mx-auto py-4 px-8">
-        <div className="flex items-center text-2xl">
-          <div className="w-12 mr-3">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-              <path
-                fill="#BEE3F8"
-                d="M44,7L4,23l40,16l-7-16L44,7z M36,23H17l18-7l1,6V23z"
-              />
-              <path
-                fill="#3182CE"
-                d="M40.212,10.669l-5.044,11.529L34.817,23l0.351,0.802l5.044,11.529L9.385,23L40.212,10.669 M44,7L4,23 l40,16l-7-16L44,7L44,7z"
-              ></path>
-              <path
-                fill="#3182CE"
-                d="M36,22l-1-6l-18,7l17,7l-2-5l-8-2h12V22z M27.661,21l5.771-2.244L33.806,21H27.661z"
-              ></path>
-            </svg>
-          </div>
-          HDokaan..
-        </div>
-        <div className="flex mt-4 sm:mt-0">
-          <Link className="px-4" to="/products">
+    <div
+      className={`fixed inset-0 bg-gray-600 bg-opacity-50 z-40 flex justify-end transition-transform transform ${
+        isOpen ? "translate-x-0" : "translate-x-full"
+      }`}
+    >
+      <div className="w-64 bg-white h-full p-4 overflow-y-auto transition-all duration-300 ease-in-out">
+        {/* Close Button */}
+        <button
+          onClick={toggleModal}
+          className="text-xl text-gray-700 absolute top-4 right-4"
+        >
+          <CircleX />
+        </button>
+
+        {/* Navigation Links */}
+        <div className="flex flex-col gap-6 mt-10">
+          <Link className="navItems text-lg" to="/" onClick={toggleModal}>
+            Home
+          </Link>
+          <Link
+            className="navItems text-lg"
+            to="/products"
+            onClick={toggleModal}
+          >
             Products
           </Link>
-        </div>
+          <Link className="navItems text-lg" to="/cart" onClick={toggleModal}>
+            Cart
+          </Link>
+          <Link className="navItems text-lg" to="/about" onClick={toggleModal}>
+            About Us
+          </Link>
+          <Link
+            className="navItems text-lg"
+            to="/contact"
+            onClick={toggleModal}
+          >
+            Contact Us
+          </Link>
 
-        <div className="hidden md:block">
-          {isLoggedIn ? (
-            <div>
-              <span className="mr-3">
-                <Link to="/cart">
-                  Cart{" "}
-                  <sup>{cartItems?.length > 0 ? cartItems?.length : 0}</sup>
-                </Link>
-              </span>
+          {/* Auth Buttons */}
+          <div className="flex flex-col gap-2 mt-4">
+            {isLoggedIn ? (
               <Link to="/logout">
                 <button
                   type="button"
-                  className="mr-5 py-3 px-8 text-sm bg-teal-500 hover:bg-teal-600 rounded text-white "
+                  className="py-3 px-6 text-sm bg-primary hover:bg-hardPrimary rounded text-white"
+                  onClick={toggleModal}
                 >
                   Logout
                 </button>
               </Link>
-            </div>
+            ) : (
+              <>
+                <Link to="/register">
+                  <button
+                    type="button"
+                    className="py-3 px-6 text-sm bg-primary hover:bg-hardPrimary rounded text-white"
+                    onClick={toggleModal}
+                  >
+                    Register
+                  </button>
+                </Link>
+                <Link to="/login">
+                  <button
+                    type="button"
+                    className="py-3 px-6 text-sm bg-primary hover:bg-hardPrimary rounded text-white"
+                    onClick={toggleModal}
+                  >
+                    Login
+                  </button>
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Navbar Component
+function Navbar() {
+  const reduxToken = useAppSelector((store) => store.auth.user.token);
+  const localStorageToken = localStorage.getItem("token");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorageToken || !!reduxToken);
+  }, [reduxToken, localStorageToken]);
+
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+  return (
+    <header className="sticky top-0 bg-white shadow z-50">
+      <div className="navbar flex justify-between items-center px-4 sm:px-16 py-4">
+        {/* Logo */}
+        <Link className="text-xl font-bold text-primary" to="/">
+          Ecobazar
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden sm:flex gap-6">
+          <Link className="navItems" to="/">
+            Home
+          </Link>
+          <Link className="navItems" to="/products">
+            Products
+          </Link>
+          <Link className="navItems" to="/cart">
+            Cart
+          </Link>
+          <Link className="navItems" to="/about">
+            About Us
+          </Link>
+          <Link className="navItems" to="/contact">
+            Contact Us
+          </Link>
+        </div>
+
+        {/* Desktop Auth Buttons */}
+        <div className="hidden sm:flex items-center gap-3">
+          {isLoggedIn ? (
+            <Link to="/logout" title="Logout">
+              <button
+                type="button"
+                className="p-2 bg-primary hover:bg-hardPrimary rounded text-white"
+              >
+                <LogOut size={20} />
+              </button>
+            </Link>
           ) : (
             <>
-              <Link to="/register">
+              <Link to="/register" title="Register">
                 <button
                   type="button"
-                  className="mr-5 py-3 px-8 text-sm bg-teal-500 hover:bg-teal-600 rounded text-white "
+                  className="p-2 bg-primary hover:bg-hardPrimary rounded text-white"
                 >
-                  Register
+                  <UserPlus size={20} />
                 </button>
               </Link>
-              <Link to="/login">
+              <Link to="/login" title="Login">
                 <button
                   type="button"
-                  className=" py-3 px-8 text-sm bg-teal-500 hover:bg-teal-600 rounded text-white "
+                  className="p-2 bg-primary hover:bg-hardPrimary rounded text-white"
                 >
-                  Login
+                  <LogIn size={20} />
                 </button>
               </Link>
             </>
           )}
         </div>
+
+        {/* Hamburger Menu for Mobile */}
+        <div className="sm:hidden flex items-center">
+          <button onClick={toggleModal} className="text-primary">
+            <Menu />
+          </button>
+        </div>
       </div>
+
+      {/* Side Modal for Mobile */}
+      <MobileModal
+        isOpen={isModalOpen}
+        toggleModal={toggleModal}
+        isLoggedIn={isLoggedIn}
+      />
     </header>
   );
 }
 
-export default Navbar
+export default Navbar;

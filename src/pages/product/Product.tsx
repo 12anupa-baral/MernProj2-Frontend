@@ -14,33 +14,30 @@ function Product(){
         dispatch(fetchProducts())
     },[])
 
-    return ( 
-        <>
-        <Navbar/>
- <div>
-  <section id="Projects" className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
-    {products.length > 0 && products.map((product:any)=>{
-        return (
+    return (
+      <>
+        <div>
+          <section
+            id="Projects"
+            className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
+          >
+            {products.length > 0 &&
+              products.map((product: any) => {
+                return <Card product={product} />;
+              })}
+          </section>
 
-            <Card product={product} />
-        )
-    })}
-
-
-  </section>
-
-  {/* Support Me 🙏🥰 */}
-  <script>
-    kofiWidgetOverlay.draw('mohamedghulam', {'{'}
-    'type': 'floating-chat',
-    'floating-chat.donateButton.text': 'Support me',
-    'floating-chat.donateButton.background-color': '#323842',
-    'floating-chat.donateButton.text-color': '#fff'
-    {'}'});
-  </script></div>
-
-        </>
-    )
+          {/* Support Me 🙏🥰 */}
+          <script>
+            kofiWidgetOverlay.draw('mohamedghulam', {"{"}
+            'type': 'floating-chat', 'floating-chat.donateButton.text': 'Support
+            me', 'floating-chat.donateButton.background-color': '#323842',
+            'floating-chat.donateButton.text-color': '#fff'
+            {"}"});
+          </script>
+        </div>
+      </>
+    );
 }
 
 export default Product

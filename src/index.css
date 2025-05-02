@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer components {
+    .headers {
+        @apply justify-start text-zinc-900 text-3xl font-semibold font-['Poppins'] leading-10;
+    }
+
+    .navbar {
+        @apply bg-gray-800 text-white px-6 py-3 flex items-center justify-between shadow-md;
+    }
+
+    .navItems {
+        @apply hover:text-primary px-4;
+    }
+
+    .input {
+        @apply w-full mt-2 p-3 border rounded-lg shadow-sm transition;
+    }
+
+    .input:focus {
+        @apply outline-none ring-2 ring-softPrimary;
+    }
+
+    .sendButton {
+        @apply w-full bg-primary text-white py-3 rounded-lg shadow-lg transition-colors;
+    }
+
+    .sendButton:hover {
+        @apply bg-hardPrimary;
+    }
+}

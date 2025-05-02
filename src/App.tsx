@@ -9,18 +9,27 @@ import Login from './pages/user/Login'
 import Product from './pages/product/Product'
 import SingleProduct from './pages/single-product/SingleProduct'
 import Cart from "./pages/cart/Cart";
+import Checkout from "./pages/checkout/Checkout";
+import MainLayout from "./globals/components/MainLayout";
+import AboutUs from "./pages/aboutUs/AboutUs";
+import ContactUs from "./pages/contact/ContactUs";
 
 function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/products" element={<Product />} />
-          <Route path="/products/:id" element={<SingleProduct />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/products" element={<Product />} />
+            <Route path="/products/:id" element={<SingleProduct />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/contact" element={<ContactUs />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </Provider>

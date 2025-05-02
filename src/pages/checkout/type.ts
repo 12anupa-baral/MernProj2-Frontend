@@ -3,21 +3,22 @@ import { Status } from "../../globals/types/type";
 
 export interface IProduct {
   productId: string;
-  quantity: number;
+  productQty: number;
 }
 
 export interface IOrderItems extends IProduct {
   orderId: string;
 }
 
-export interface IOrder{
-    status: Status,
-    items:IOrderItems[]
+export interface IOrder {
+  status: Status;
+  items: IOrderItems[];
+  khaltiUrl: string | null;
 }
-enum paymentMethod{
-    Esewa= "esewa",
-    Khalti = "khalti",
-    cod="cod"
+export enum paymentMethod {
+  Esewa = "esewa",
+  Khalti = "khalti",
+  cod = "cod",
 }
 
 export interface IData {

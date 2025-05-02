@@ -1,23 +1,106 @@
-import React from 'react'
-import Navbar from '../../globals/components/Navbar'
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import React, { ChangeEvent, FormEvent, useState } from "react";
+import { Phone } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { IData, paymentMethod } from "./type";
+import { orderItem } from "../../store/checkoutSlice";
 
 const Checkout = () => {
-  const { items } = useAppSelector((store) => store.cart)
-    const subTotal = items.reduce(
-      (total, item) => total + item.Product.productPrice * item.quantity,
-      0
-    );
+  const dispatch = useAppDispatch();
+  const { items } = useAppSelector((store) => store.cart);
+  const productData =
+    items.length > 0
+      ? items.map((item) => {
+          return {
+            productId: item.Product.id,
+            productQty: item.quantity,
+          };
+        })
+      : [];
 
-    const totalQuantity = items.reduce(
-      (total, item) => total + item.quantity,
-      0
-    );
+  const [data, setData] = useState<IData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    addressLine: "",
+    city: "",
+    state: "",
+    zipcode: "",
+    phoneNumber: 0,
+    totalAmount: 0,
+    paymentMethod: paymentMethod.cod,
+    products: productData,
+  });
 
-    const shippingPrice = 100;
-    const total = subTotal + shippingPrice;
+  const [errors, setErrors] = useState<Partial<IData>>({});
+
+  const subTotal = items.reduce(
+    (total, item) => total + item.Product.productPrice * item.quantity,
+    0
+  );
+
+  const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
+  const shippingPrice = 100;
+  const total = subTotal + shippingPrice;
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    // Clear error when user types
+    if (errors[name as keyof IData]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: value as paymentMethod,
+    }));
+  };
+
+  const validate = (): boolean => {
+    const newErrors: Partial<IData> = {};
+    if (!data.firstName) newErrors.firstName = "First name is required";
+    if (!data.lastName) newErrors.lastName = "Last name is required";
+    if (!data.email) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+    if (!data.addressLine) newErrors.addressLine = "Address is required";
+    if (!data.city) newErrors.city = "City is required";
+    if (!data.state) newErrors.state = "State is required";
+    if (!data.zipcode) newErrors.zipcode = "ZIP code is required";
+    if (!data.state) newErrors.state = "State is required";
+    // if (!data.phoneNumber)   newErrors.phoneNumber = "Phone number is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    if (items.length === 0) {
+      alert("Your cart is empty");
+      return;
+    }
+    dispatch(
+      orderItem({
+        ...data,
+        products: productData,
+        totalAmount: total,
+      })
+    );
+  };
+
   return (
-    <>
+    <form onSubmit={handleSubmit} className="bg-gray-50 min-h-screen">
       <div className="flex flex-col items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
         <div className="mt-4 py-2 text-xs sm:mt-0 sm:ml-auto sm:text-base">
           <div className="relative">
@@ -33,11 +116,11 @@ const Checkout = () => {
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    stroke-width="2"
+                    strokeWidth="2"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
@@ -50,11 +133,11 @@ const Checkout = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                strokeWidth="2"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M9 5l7 7-7 7"
                 />
               </svg>
@@ -73,11 +156,11 @@ const Checkout = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                strokeWidth="2"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M9 5l7 7-7 7"
                 />
               </svg>
@@ -101,42 +184,47 @@ const Checkout = () => {
             Check your items. And select a suitable shipping method.
           </p>
           <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-            {items.length > 0 ? items.map((item) => {
-              return (
-                <div className="flex flex-col rounded-lg bg-white sm:flex-row">
+            {items.length > 0 ? (
+              items.map((item) => (
+                <div
+                  key={item.Product.id}
+                  className="flex flex-col rounded-lg bg-white sm:flex-row"
+                >
                   <img
                     className="m-2 h-24 w-28 rounded-md border object-cover object-center"
                     src={`http://localhost:3001/uploads/${item?.Product?.productImageUrl}`}
-                    alt=""
+                    alt={item.Product.productName}
                   />
                   <div className="flex w-full flex-col px-4 py-4">
                     <span className="font-semibold">
                       {item.Product.productName}
                     </span>
                     <span className="float-right text-gray-400">
-                   Quantity: {item.quantity}
+                      Quantity: {item.quantity}
                     </span>
-                    <p className="text-lg font-bold">{ item.Product.productPrice}</p>
+                    <p className="text-lg font-bold">
+                      Rs {item.Product.productPrice}
+                    </p>
                   </div>
                 </div>
-              )
-            })
-              :
-              <p>No items found</p>
-          
-          }
-          
+              ))
+            ) : (
+              <p className="py-4 text-center text-gray-500">
+                Your cart is empty
+              </p>
+            )}
           </div>
 
           <p className="mt-8 text-lg font-medium">Shipping Methods</p>
-          <form className="mt-5 grid gap-6">
+          <div className="mt-5 grid gap-6">
             <div className="relative">
               <input
                 className="peer hidden"
                 id="radio_1"
                 type="radio"
-                name="radio"
+                name="shippingMethod"
                 checked
+                readOnly
               />
               <span className="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
               <label
@@ -146,7 +234,7 @@ const Checkout = () => {
                 <img
                   className="w-14 object-contain"
                   src="/images/naorrAeygcJzX0SyNI4Y0.png"
-                  alt=""
+                  alt="Fedex Delivery"
                 />
                 <div className="ml-5">
                   <span className="mt-2 font-semibold">Fedex Delivery</span>
@@ -156,33 +244,7 @@ const Checkout = () => {
                 </div>
               </label>
             </div>
-            <div className="relative">
-              <input
-                className="peer hidden"
-                id="radio_2"
-                type="radio"
-                name="radio"
-                checked
-              />
-              <span className="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
-              <label
-                className="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4"
-                htmlFor="radio_2"
-              >
-                <img
-                  className="w-14 object-contain"
-                  src="/images/oG8xsl3xsOkwkMsrLGKM4.png"
-                  alt=""
-                />
-                <div className="ml-5">
-                  <span className="mt-2 font-semibold">Fedex Delivery</span>
-                  <p className="text-slate-500 text-sm leading-6">
-                    Delivery: 2-4 Days
-                  </p>
-                </div>
-              </label>
-            </div>
-          </form>
+          </div>
         </div>
         <div className="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0">
           <p className="text-xl font-medium">Payment Details</p>
@@ -201,7 +263,11 @@ const Checkout = () => {
                 type="text"
                 id="email"
                 name="email"
-                className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                value={data.email}
+                onChange={handleChange}
+                className={`w-full rounded-md border ${
+                  errors.email ? "border-red-500" : "border-gray-200"
+                } px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500`}
                 placeholder="your.email@gmail.com"
               />
               <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
@@ -211,148 +277,226 @@ const Checkout = () => {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  strokeWidth="2"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
                   />
                 </svg>
               </div>
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+              )}
             </div>
-            <label
-              htmlFor="card-holder"
-              className="mt-4 mb-2 block text-sm font-medium"
-            >
-              Card Holder
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                id="card-holder"
-                name="card-holder"
-                className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm uppercase shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Your full name here"
-              />
-              <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
+
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="relative">
+                <label
+                  htmlFor="firstName"
+                  className="mb-2 block text-sm font-medium"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <label
-              htmlFor="card-no"
-              className="mt-4 mb-2 block text-sm font-medium"
-            >
-              Card Details
-            </label>
-            <div className="flex">
-              <div className="relative w-7/12 flex-shrink-0">
+                  First Name
+                </label>
                 <input
                   type="text"
-                  id="card-no"
-                  name="card-no"
-                  className="w-full rounded-md border border-gray-200 px-2 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="xxxx-xxxx-xxxx-xxxx"
+                  id="firstName"
+                  name="firstName"
+                  value={data.firstName}
+                  onChange={handleChange}
+                  className={`w-full rounded-md border ${
+                    errors.firstName ? "border-red-500" : "border-gray-200"
+                  } px-4 py-3 text-sm uppercase shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500`}
+                  placeholder="First Name"
+                />
+                {errors.firstName && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.firstName}
+                  </p>
+                )}
+              </div>
+              <div className="relative">
+                <label
+                  htmlFor="lastName"
+                  className="mb-2 block text-sm font-medium"
+                >
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={data.lastName}
+                  onChange={handleChange}
+                  className={`w-full rounded-md border ${
+                    errors.lastName ? "border-red-500" : "border-gray-200"
+                  } px-4 py-3 text-sm uppercase shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500`}
+                  placeholder="Last Name"
+                />
+                {errors.lastName && (
+                  <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label
+                htmlFor="phoneNumber"
+                className="mb-2 block text-sm font-medium"
+              >
+                Phone Number
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={data.phoneNumber}
+                  onChange={handleChange}
+                  className={`w-full rounded-md border ${
+                    errors.phoneNumber ? "border-red-500" : "border-gray-200"
+                  } px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500`}
+                  placeholder="+977"
                 />
                 <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
-                  <svg
-                    className="h-4 w-4 text-gray-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M11 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1z" />
-                    <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm13 2v5H1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm-1 9H2a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1z" />
-                  </svg>
+                  <Phone className="size-4 text-gray-400" />
                 </div>
+                {errors.phoneNumber && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.phoneNumber}
+                  </p>
+                )}
               </div>
-              <input
-                type="text"
-                name="credit-expiry"
-                className="w-full rounded-md border border-gray-200 px-2 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="MM/YY"
-              />
-              <input
-                type="text"
-                name="credit-cvc"
-                className="w-1/6 flex-shrink-0 rounded-md border border-gray-200 px-2 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="CVC"
-              />
             </div>
+
             <label
-              htmlFor="billing-address"
+              htmlFor="addressLine"
               className="mt-4 mb-2 block text-sm font-medium"
             >
               Billing Address
             </label>
-            <div className="flex flex-col sm:flex-row">
-              <div className="relative flex-shrink-0 sm:w-7/12">
+            <div className="grid gap-4">
+              <div className="relative">
                 <input
                   type="text"
-                  id="billing-address"
-                  name="billing-address"
-                  className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                  id="addressLine"
+                  name="addressLine"
+                  value={data.addressLine}
+                  onChange={handleChange}
+                  className={`w-full rounded-md border ${
+                    errors.addressLine ? "border-red-500" : "border-gray-200"
+                  } px-4 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500`}
                   placeholder="Street Address"
                 />
-                <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
-                  <img
-                    className="h-4 w-4 object-contain"
-                    src="https://flagpack.xyz/_nuxt/4c829b6c0131de7162790d2f897a90fd.svg"
-                    alt=""
+                {errors.addressLine && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.addressLine}
+                  </p>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    value={data.city}
+                    onChange={handleChange}
+                    className={`w-full rounded-md border ${
+                      errors.city ? "border-red-500" : "border-gray-200"
+                    } px-4 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500`}
+                    placeholder="City"
                   />
+                  {errors.city && (
+                    <p className="mt-1 text-sm text-red-500">{errors.city}</p>
+                  )}
+                </div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="state"
+                    name="state"
+                    value={data.state}
+                    onChange={handleChange}
+                    className={`w-full rounded-md border ${
+                      errors.state ? "border-red-500" : "border-gray-200"
+                    } px-4 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500`}
+                    placeholder="State"
+                  />
+                  {errors.state && (
+                    <p className="mt-1 text-sm text-red-500">{errors.state}</p>
+                  )}
                 </div>
               </div>
-              <select
-                name="billing-state"
-                className="w-full rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="State">State</option>
-              </select>
-              <input
-                type="text"
-                name="billing-zip"
-                className="flex-shrink-0 rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm outline-none sm:w-1/6 focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="ZIP"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  id="zipcode"
+                  name="zipcode"
+                  value={data.zipcode}
+                  onChange={handleChange}
+                  className={`w-full rounded-md border ${
+                    errors.zipcode ? "border-red-500" : "border-gray-200"
+                  } px-4 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500`}
+                  placeholder="ZIP Code"
+                />
+                {errors.zipcode && (
+                  <p className="mt-1 text-sm text-red-500">{errors.zipcode}</p>
+                )}
+              </div>
             </div>
+
+            <label
+              htmlFor="paymentMethod"
+              className="mt-4 mb-2 block text-sm font-medium"
+            >
+              Payment Method
+            </label>
+            <select
+              id="paymentMethod"
+              name="paymentMethod"
+              value={data.paymentMethod}
+              onChange={handleSelectChange}
+              className="w-full rounded-md border border-gray-200 py-3 px-2 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+            >
+              <option value={paymentMethod.cod}>Cash On Delivery</option>
+              <option value={paymentMethod.Khalti}>Khalti</option>
+              <option value={paymentMethod.Esewa}>Esewa</option>
+            </select>
 
             <div className="mt-6 border-t border-b py-2">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-900">Subtotal</p>
-                <p className="font-semibold text-gray-900">Rs {subTotal}</p>
+                <p className="font-semibold text-gray-900">
+                  Rs {subTotal.toFixed(2)}
+                </p>
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-900">Shipping</p>
-                <p className="font-semibold text-gray-900"> Rs { shippingPrice}</p>
+                <p className="font-semibold text-gray-900">
+                  Rs {shippingPrice.toFixed(2)}
+                </p>
               </div>
             </div>
             <div className="mt-6 flex items-center justify-between">
               <p className="text-sm font-medium text-gray-900">Total</p>
-              <p className="text-2xl font-semibold text-gray-900"> Rs { total}</p>
+              <p className="text-2xl font-semibold text-gray-900">
+                Rs {total.toFixed(2)}
+              </p>
             </div>
           </div>
-          <button className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">
+          <button
+            className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white hover:bg-gray-800 transition-colors"
+            type="submit"
+            disabled={items.length === 0}
+          >
             Place Order
           </button>
         </div>
       </div>
-    </>
+    </form>
   );
-}
+};
 
-export default Checkout
+export default Checkout;

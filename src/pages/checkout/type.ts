@@ -1,19 +1,26 @@
 import { Status } from "../../globals/types/type";
-
+import { IOrderDetail } from "../orderdetails/types";
 
 export interface IProduct {
   productId: string;
   productQty: number;
+  orderStatus?: string;
+  totalAmount?: number;
+  Payment?: {
+    paymentMethod: string;
+    paymentStatus: string;
+  };
 }
 
 export interface IOrderItems extends IProduct {
-  orderId: string;
+  id: string;
 }
 
 export interface IOrder {
   status: Status;
   items: IOrderItems[];
   khaltiUrl: string | null;
+  orderDetails: IOrderDetail[];
 }
 export enum paymentMethod {
   Esewa = "esewa",

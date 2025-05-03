@@ -14,6 +14,8 @@ import MainLayout from "./globals/components/MainLayout";
 import AboutUs from "./pages/aboutUs/AboutUs";
 import ContactUs from "./pages/contact/ContactUs";
 import PageNotFound from "./pages/PageNotFound";
+import MyOrders from "./pages/orders/MyOrders";
+import OrderDetails from "./pages/orderdetails/OrderDetails";
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/contact" element={<ContactUs />} />
+            <Route path="/myorder" element={<MyOrders />} />
+            <Route path="/myorder/:id" element={<OrderDetails />} />
           </Route>
           <Route path="*" element={<PageNotFound />} />
         </Routes>

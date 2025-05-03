@@ -1,6 +1,5 @@
 
-import { useEffect } from "react"
-import Navbar from "../../globals/components/Navbar"
+import { useEffect } from "react";
 import Card from "./components/Card"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { fetchProducts } from "../../store/productSlice"

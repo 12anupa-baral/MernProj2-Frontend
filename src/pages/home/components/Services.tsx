@@ -1,4 +1,3 @@
-import React from "react";
 import Shipping from "../../../icons/Shipping";
 import Support from "../../../icons/Support";
 import Payment from "../../../icons/Payment";

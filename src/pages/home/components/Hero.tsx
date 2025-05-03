@@ -1,7 +1,6 @@
 import { ArrowRight } from "lucide-react";
-import React from "react";
 import Button from "../../../globals/components/Button";
-
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -53,12 +52,15 @@ const Hero = () => {
               </p>
             </div>
 
-            <button className="rounded-[43px] flex items-center gap-2 group">
+            <Link
+              to="/products"
+              className="rounded-[43px] flex items-center gap-2 group"
+            >
               <span className="text-softPrimary text-base font-semibold font-['Poppins']">
                 Shop Now
               </span>
               <ArrowRight className="text-softPrimary" />
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -75,12 +77,15 @@ const Hero = () => {
               </div>
             </div>
 
-            <button className="rounded-[43px] flex items-center gap-2 group">
+            <Link
+              to="/products"
+              className="rounded-[43px] flex items-center gap-2 group"
+            >
               <span className="text-softPrimary text-base font-semibold font-['Poppins']">
                 Shop Now
               </span>
               <ArrowRight className="text-softPrimary" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

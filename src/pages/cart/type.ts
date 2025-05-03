@@ -1,5 +1,4 @@
 import { Status } from "../../globals/types/type";
-import { IProduct } from "../product/types";
 
 export interface IcartProductItem {
   id: string;
@@ -9,15 +8,15 @@ export interface IcartProductItem {
 }
 
 export interface ICartItem {
-    id:string,
-    productId: string ,
-    quantity: number,
-    Product:IcartProductItem
+  id: string;
+  productId: string;
+  quantity: number;
+  Product: IcartProductItem;
 }
 
 export interface ICartInitialState {
-    items: ICartItem[] ;
-    status:Status
+  items: ICartItem[];
+  status: Status;
 }
 
 export interface IcartUpdateItem {

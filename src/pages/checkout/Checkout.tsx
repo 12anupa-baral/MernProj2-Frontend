@@ -1,12 +1,14 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Phone } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { IData, paymentMethod } from "./type";
 import { orderItem } from "../../store/checkoutSlice";
+import { toast } from "react-toastify";
 
 const Checkout = () => {
   const dispatch = useAppDispatch();
   const { items } = useAppSelector((store) => store.cart);
+  const { khaltiUrl } = useAppSelector((store) => store.checkout);
   const productData =
     items.length > 0
       ? items.map((item) => {
@@ -76,21 +78,20 @@ const Checkout = () => {
     if (!data.state) newErrors.state = "State is required";
     if (!data.zipcode) newErrors.zipcode = "ZIP code is required";
     if (!data.state) newErrors.state = "State is required";
-    // if (!data.phoneNumber)   newErrors.phoneNumber = "Phone number is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
 
     if (items.length === 0) {
-      alert("Your cart is empty");
+      toast.error("Your cart is empty");
       return;
     }
-    dispatch(
+    await dispatch(
       orderItem({
         ...data,
         products: productData,
@@ -98,6 +99,14 @@ const Checkout = () => {
       })
     );
   };
+
+  useEffect(() => {
+    if (khaltiUrl) {
+      window.location.href = khaltiUrl;
+      return;
+    }
+  }, [khaltiUrl]);
+  console.log(khaltiUrl);
 
   return (
     <form onSubmit={handleSubmit} className="bg-gray-50 min-h-screen">
@@ -486,13 +495,33 @@ const Checkout = () => {
               </p>
             </div>
           </div>
-          <button
-            className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white hover:bg-gray-800 transition-colors"
-            type="submit"
-            disabled={items.length === 0}
-          >
-            Place Order
-          </button>
+          {data.paymentMethod === paymentMethod.Esewa && (
+            <button
+              className="mt-4 mb-8 w-full rounded-md bg-green-500 px-6 py-3 font-medium text-white hover:bg-gray-800 transition-colors"
+              type="submit"
+              disabled={items.length === 0}
+            >
+              Pay with Esewa
+            </button>
+          )}
+          {data.paymentMethod === paymentMethod.Khalti && (
+            <button
+              className="mt-4 mb-8 w-full rounded-md bg-purple-500 px-6 py-3 font-medium text-white hover:bg-gray-800 transition-colors"
+              type="submit"
+              disabled={items.length === 0}
+            >
+              Pay with Khalti
+            </button>
+          )}
+          {data.paymentMethod === paymentMethod.cod && (
+            <button
+              className="mt-4 mb-8 w-full rounded-md bg-gray-500 px-6 py-3 font-medium text-white hover:bg-gray-800 transition-colors"
+              type="submit"
+              disabled={items.length === 0}
+            >
+              Cash on Delivery
+            </button>
+          )}
         </div>
       </div>
     </form>

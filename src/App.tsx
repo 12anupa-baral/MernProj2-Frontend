@@ -13,6 +13,7 @@ import Checkout from "./pages/checkout/Checkout";
 import MainLayout from "./globals/components/MainLayout";
 import AboutUs from "./pages/aboutUs/AboutUs";
 import ContactUs from "./pages/contact/ContactUs";
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/about" element={<AboutUs />} />
             <Route path="/contact" element={<ContactUs />} />
           </Route>
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>
     </Provider>

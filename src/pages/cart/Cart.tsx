@@ -1,21 +1,22 @@
 import { Link } from "react-router-dom";
-import Navbar from "../../globals/components/Navbar";
 import {
   handleCartItemDelete,
   handleCartItemUpdate,
 } from "../../store/cartSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import store from "../../store/store";
+import { toast } from "react-toastify";
 
 const Cart = () => {
   const items = useAppSelector((store) => store.cart.items);
   const dispatch = useAppDispatch();
   const handleUpdate = (productId: string, quantity: number) => {
     dispatch(handleCartItemUpdate(productId, quantity));
+    toast.success("Quantity updated successfully!");
   };
 
   const handleDeleteCart = (productId: string) => {
     dispatch(handleCartItemDelete(productId));
+    toast.success("Product removed from cart.");
   };
 
   const subTotal = items.reduce(
@@ -46,7 +47,7 @@ const Cart = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {items.length > 0 &&
+                    {items.length > 0 ? (
                       items.map((item, id) => {
                         return (
                           <tr key={id}>
@@ -110,40 +111,52 @@ const Cart = () => {
                             </td>
                           </tr>
                         );
-                      })}
+                      })
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={5}
+                          className="text-red-500 text-center py-8 font-bold"
+                        >
+                          No items found
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
             </div>
 
             {/* summary */}
-            <div className="md:w-1/4">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-lg font-semibold mb-4">Summary</h2>
-                <div className="flex justify-between mb-2">
-                  <span>Subtotal</span>
-                  <span>Rs {subTotal}</span>
+            {items.length !== 0 && (
+              <div className="md:w-1/4">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-lg font-semibold mb-4">Summary</h2>
+                  <div className="flex justify-between mb-2">
+                    <span>Subtotal</span>
+                    <span>Rs {subTotal}</span>
+                  </div>
+                  <div className="flex justify-between mb-2">
+                    <span>Total Quantity</span>
+                    <span>{totalQuantity}</span>
+                  </div>
+                  <div className="flex justify-between mb-2">
+                    <span>Shipping</span>
+                    <span>Rs {shippingPrice}</span>
+                  </div>
+                  <hr className="my-2" />
+                  <div className="flex justify-between mb-2">
+                    <span className="font-semibold">Total</span>
+                    <span className="font-semibold">{total}</span>
+                  </div>
+                  <Link to="/checkout">
+                    <button className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full">
+                      Checkout
+                    </button>
+                  </Link>
                 </div>
-                <div className="flex justify-between mb-2">
-                  <span>Total Quantity</span>
-                  <span>{totalQuantity}</span>
-                </div>
-                <div className="flex justify-between mb-2">
-                  <span>Shipping</span>
-                  <span>Rs {shippingPrice}</span>
-                </div>
-                <hr className="my-2" />
-                <div className="flex justify-between mb-2">
-                  <span className="font-semibold">Total</span>
-                  <span className="font-semibold">{total}</span>
-                </div>
-                <Link to="/checkout">
-                  <button className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full">
-                    Checkout
-                  </button>
-                </Link>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </section>

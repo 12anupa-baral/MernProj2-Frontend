@@ -1,5 +1,3 @@
-import React from "react";
-
 const ContactUs = () => {
   return (
     <div className="bg-white">
@@ -51,7 +49,7 @@ const ContactUs = () => {
             <label htmlFor="message" className="block text-gray-700 font-bold">
               Message
             </label>
-            <textarea id="message"  className="input"></textarea>
+            <textarea id="message" className="input"></textarea>
           </div>
           <button type="submit" className="sendButton">
             Send Message

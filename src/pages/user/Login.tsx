@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { loginUser} from "../../store/authSlice"
 import { Link } from "react-router-dom"
+import { toast } from "react-toastify";
 
 
 function Login(){
@@ -22,7 +23,8 @@ function Login(){
 
     const handleSubmit = (e:FormEvent<HTMLFormElement>)=>{
         e.preventDefault()
-        dispatch(loginUser(data))
+        dispatch(loginUser(data));
+        toast.success("Login Successful!");
     }
 
 

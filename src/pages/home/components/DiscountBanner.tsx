@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import React from "react";
+import { Link } from "react-router-dom";
 
 const DiscountBanner = () => {
   return (
@@ -26,12 +26,15 @@ const DiscountBanner = () => {
         </p>
 
         {/* Button */}
-        <div className="px-6 py-3 sm:px-10 sm:py-4 bg-green-600 rounded-full flex items-center gap-3 sm:gap-4 w-fit cursor-pointer hover:bg-green-700 transition">
+        <Link
+          to="/products"
+          className="px-6 py-3 sm:px-10 sm:py-4 bg-green-600 rounded-full flex items-center gap-3 sm:gap-4 w-fit cursor-pointer hover:bg-green-700 transition"
+        >
           <span className="text-white text-sm sm:text-base font-semibold font-poppins leading-tight">
             Shop Now
           </span>
           <ArrowRight className="text-white w-4 h-4 sm:w-5 sm:h-5" />
-        </div>
+        </Link>
       </div>
     </div>
   );

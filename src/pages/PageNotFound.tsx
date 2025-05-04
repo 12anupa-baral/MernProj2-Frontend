@@ -1,9 +1,7 @@
-import React from "react";
 import NotFound from "../icons/NotFound";
 import { Link } from "react-router-dom";
 
 const PageNotFound = () => {
-
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center text-center px-4 py-10">
       <NotFound />
@@ -13,11 +11,11 @@ const PageNotFound = () => {
       </h1>
 
       <p className="text-zinc-500 text-base font-normal font-poppins mt-4 max-w-xl">
-       Sorry, the page you are trying to reach is not available.
+        Sorry, the page you are trying to reach is not available.
       </p>
 
       <Link
-       to="/"
+        to="/"
         className="mt-6 px-6 py-3 bg-green-600 text-white text-sm font-semibold font-poppins rounded-full hover:bg-green-700 transition"
       >
         Back to Home

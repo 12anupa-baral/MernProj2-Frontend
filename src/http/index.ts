@@ -21,7 +21,7 @@ const API = axios.create({
 
 
 const APIWITHTOKEN = axios.create({
-  baseURL: "https://your-ngrok-url.ngrok-free.app/api",
+  baseURL: "http://localhost:3001/api",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -31,7 +31,7 @@ const APIWITHTOKEN = axios.create({
 APIWITHTOKEN.interceptors.request.use((config) => {
   const token = localStorage.getItem("tokenHoYo");
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `${token}`;
   }
   return config;
 });

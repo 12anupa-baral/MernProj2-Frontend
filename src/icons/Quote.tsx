@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Quote = () => {
   return (
     <svg
@@ -18,6 +16,6 @@ const Quote = () => {
       />
     </svg>
   );
-}
+};
 
-export default Quote
+export default Quote;

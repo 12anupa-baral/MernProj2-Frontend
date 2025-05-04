@@ -1,5 +1,3 @@
-import React from 'react'
-
 const ShoppingBag = () => {
   return (
     <>
@@ -20,6 +18,6 @@ const ShoppingBag = () => {
       </svg>
     </>
   );
-}
+};
 
-export default ShoppingBag
+export default ShoppingBag;

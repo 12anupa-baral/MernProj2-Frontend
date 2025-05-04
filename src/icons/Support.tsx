@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Support = () => {
   return (
     <svg
@@ -15,6 +13,6 @@ const Support = () => {
       />
     </svg>
   );
-}
+};
 
-export default Support
+export default Support;

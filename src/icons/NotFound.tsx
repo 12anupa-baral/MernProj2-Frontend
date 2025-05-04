@@ -1,5 +1,3 @@
-import React from 'react'
-
 const NotFound = () => {
   return (
     <>
@@ -753,6 +751,6 @@ const NotFound = () => {
       </svg>
     </>
   );
-}
+};
 
-export default NotFound
+export default NotFound;

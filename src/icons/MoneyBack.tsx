@@ -1,5 +1,3 @@
-import React from 'react'
-
 const MoneyBack = () => {
   return (
     <svg
@@ -22,6 +20,6 @@ const MoneyBack = () => {
       </defs>
     </svg>
   );
-}
+};
 
-export default MoneyBack
+export default MoneyBack;

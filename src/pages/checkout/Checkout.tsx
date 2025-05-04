@@ -481,6 +481,13 @@ const Checkout = () => {
                   Rs {subTotal.toFixed(2)}
                 </p>
               </div>
+
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-gray-900">
+                  Total Quantity
+                </p>
+                <p className="font-semibold text-gray-900">{totalQuantity}</p>
+              </div>
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-900">Shipping</p>
                 <p className="font-semibold text-gray-900">

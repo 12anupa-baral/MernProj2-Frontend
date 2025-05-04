@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Payment = () => {
   return (
     <svg
@@ -19,6 +17,6 @@ const Payment = () => {
       />
     </svg>
   );
-}
+};
 
-export default Payment
+export default Payment;

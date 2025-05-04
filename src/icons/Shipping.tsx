@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Shipping = () => {
   return (
     <svg
@@ -15,6 +13,6 @@ const Shipping = () => {
       />
     </svg>
   );
-}
+};
 
-export default Shipping
+export default Shipping;

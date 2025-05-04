@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 export function StoreLocation() {
@@ -83,15 +83,12 @@ export function LanguageCurrency() {
   );
 }
 
-
-
 const Topbar = () => {
   return (
     <header className=" px-[10%] flex justify-between items-center w-full py-3 text-xs bg-white shadow-sm text-stone-500 max-md:px-4 border-b-2">
       <StoreLocation />
       <div className="flex items-center gap-5">
         <LanguageCurrency />
-
       </div>
     </header>
   );

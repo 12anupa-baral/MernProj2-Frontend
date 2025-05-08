@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { fetchMyOders } from "../../store/checkoutSlice";
+import { fetchMyOrders } from "../../store/checkoutSlice";
 import { Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -17,10 +17,11 @@ const MyOrders = () => {
     return items.filter(
       (item) =>
         item.id.toLowerCase().includes(searchTerm) ||
-        item.orderStatus?.toLowerCase().includes(searchTerm) ||
+        item.orderStatus?.toString()?.includes(searchTerm) ||
         item.Payment?.paymentMethod?.toLowerCase().includes(searchTerm) ||
         item.totalAmount === parseInt(searchTerm)
-    );}, [items, searchTerm]);
+    );
+  }, [items, searchTerm]);
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
@@ -30,13 +31,13 @@ const MyOrders = () => {
   }, [filteredItems, currentPage, itemsPerPage]);
 
   useEffect(() => {
-    dispatch(fetchMyOders());
+    dispatch(fetchMyOrders());
   }, [dispatch]);
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(e.target.value.toLowerCase());
-      setCurrentPage(1); 
+      setCurrentPage(1);
     },
     []
   );
@@ -281,7 +282,8 @@ const MyOrders = () => {
                     </p>
                   </td>
                   <td className="p-4 border-b border-blue-gray-50">
-                    <Link to={`/myorder/${item.id}`}
+                    <Link
+                      to={`/myorder/${item.id}`}
                       className="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                       type="button"
                     >

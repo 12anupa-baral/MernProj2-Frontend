@@ -1,28 +1,30 @@
 import { useParams } from "react-router-dom";
-import { fetchMyOder } from "../../store/checkoutSlice";
-import { useAppDispatch, useAppSelector } from "../../store/hooks"
+import { cancelMyOrder, fetchMyOrder } from "../../store/checkoutSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { useEffect } from "react";
 
-
 const OrderDetails = () => {
-    const {id} = useParams();
-    const { orderDetails } = useAppSelector((store) => store.checkout)
-    const dispatch = useAppDispatch();
-    useEffect(() => {
-        if (id)
-            dispatch(fetchMyOder(id));
-    }, [])
-    
+  const { id } = useParams();
+  const { orderDetails } = useAppSelector((store) => store.checkout);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (id) dispatch(fetchMyOrder(id));
+  }, []);
 
-    
+  const handleCancelOrder = () => {
+    if (id) {
+      dispatch(cancelMyOrder(id));
+    }
+  };
+
   return (
     <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
       <div className="flex justify-start item-start space-y-2 flex-col">
         <h1 className="text-3xl dark:text-white lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">
           Order #{id}
         </h1>
-        <h1 className="text-3xl dark:text-white lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">
-          Status #{orderDetails[0].Order.orderStatus}
+        <h1 className="text-xl dark:text-white lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">
+          Status {orderDetails[0]?.Order?.orderStatus}
         </h1>
         <p className="text-base dark:text-gray-300 font-medium leading-6 text-gray-600">
           {new Date(orderDetails[0]?.createdAt).toLocaleDateString()}
@@ -97,7 +99,7 @@ const OrderDetails = () => {
                     Subtotal
                   </p>
                   <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                    Rs {orderDetails[0].Order.totalAmount}
+                    Rs {orderDetails[0]?.Order?.totalAmount}
                   </p>
                 </div>
                 <div className="flex justify-between items-center w-full">
@@ -108,7 +110,7 @@ const OrderDetails = () => {
                     </span>
                   </p>
                   <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                    Rs {(15 / 100) * orderDetails[0].Order.totalAmount} (15%)
+                    Rs {(15 / 100) * orderDetails[0]?.Order.totalAmount} (15%)
                   </p>
                 </div>
                 <div className="flex justify-between items-center w-full">
@@ -126,8 +128,8 @@ const OrderDetails = () => {
                 </p>
                 <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">
                   Rs{" "}
-                  {orderDetails[0].Order.totalAmount -
-                    (15 / 100) * orderDetails[0].Order.totalAmount -
+                  {orderDetails[0]?.Order?.totalAmount -
+                    (15 / 100) * orderDetails[0]?.Order?.totalAmount +
                     100}
                 </p>
               </div>
@@ -169,16 +171,14 @@ const OrderDetails = () => {
           <div className="flex flex-col md:flex-row xl:flex-col justify-start items-stretch h-full w-full md:space-x-6 lg:space-x-8 xl:space-x-0">
             <div className="flex flex-col justify-start items-start flex-shrink-0">
               <div className="flex justify-center w-full md:justify-start items-center space-x-4 py-8 border-b border-gray-200">
-                <img
-                  src="https://i.ibb.co/5TSg7f6/Rectangle-18.png"
-                  alt="avatar"
-                />
                 <div className="flex justify-start items-start flex-col space-y-2">
                   <p className="text-base dark:text-white font-semibold leading-4 text-left text-gray-800">
-                    David Kent
+                    {orderDetails[0]?.Order?.firstName +
+                      " " +
+                      orderDetails[0]?.Order?.lastName}
                   </p>
                   <p className="text-sm dark:text-gray-300 leading-5 text-gray-600">
-                    10 Previous Orders
+                    Quantity {orderDetails[0]?.quantity}
                   </p>
                 </div>
               </div>
@@ -195,7 +195,7 @@ const OrderDetails = () => {
                   alt="email"
                 />
                 <p className="cursor-pointer text-sm leading-5 ">
-                  david89@gmail.com
+                  {orderDetails[0]?.Order?.email}
                 </p>
               </div>
             </div>
@@ -206,7 +206,7 @@ const OrderDetails = () => {
                     Shipping Address
                   </p>
                   <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
-                    180 North King Street, Northhampton MA 1060
+                    {orderDetails[0]?.Order?.addressLine}
                   </p>
                 </div>
                 <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4">
@@ -214,14 +214,24 @@ const OrderDetails = () => {
                     Billing Address
                   </p>
                   <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
-                    180 North King Street, Northhampton MA 1060
+                    {orderDetails[0]?.Order?.state +
+                      ", " +
+                      orderDetails[0]?.Order?.city}
                   </p>
                 </div>
               </div>
               <div className="flex w-full justify-center items-center md:justify-start md:items-start">
-                <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base font-medium leading-4 text-gray-800">
+                <button className="mt-6 md:mt-0   py-5 hover:bg-hardPrimary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border bg-primary border-gray-800  w-96 2xl:w-full text-base font-medium leading-4 text-white">
                   Edit Details
                 </button>
+                {orderDetails[0]?.Order?.orderStatus !== "cancelled" && (
+                  <button
+                    onClick={handleCancelOrder}
+                    className="mt-6 md:mt-0 text-white py-5 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border bg-red-500 border-gray-800  w-96 2xl:w-full text-base font-medium leading-4 "
+                  >
+                    Cancel Order
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -229,6 +239,6 @@ const OrderDetails = () => {
       </div>
     </div>
   );
-}
+};
 
 export default OrderDetails

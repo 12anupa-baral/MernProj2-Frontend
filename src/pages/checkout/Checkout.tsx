@@ -4,11 +4,13 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { IData, paymentMethod } from "./type";
 import { orderItem } from "../../store/checkoutSlice";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { Status } from "../../globals/types/type";
 
 const Checkout = () => {
   const dispatch = useAppDispatch();
   const { items } = useAppSelector((store) => store.cart);
-  const { khaltiUrl } = useAppSelector((store) => store.checkout);
+  const { khaltiUrl, status } = useAppSelector((store) => store.checkout);
   const productData =
     items.length > 0
       ? items.map((item) => {
@@ -82,7 +84,30 @@ const Checkout = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  const navigate = useNavigate();
 
+  // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   if (!validate()) return;
+
+  //   if (items.length === 0) {
+  //     toast.error("Your cart is empty");
+  //     return;
+  //   }
+  //   await  dispatch(
+  //     orderItem({
+  //       ...data,
+  //       products: productData,
+  //       totalAmount: total,
+  //     })
+  //   );
+  //   if (status == "success") {
+  //     toast.success("Order placed successfully");
+  //     navigate("/myorder");
+  //   } else {
+  //     toast.error("Failed to place order");
+  //   }
+  // };
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
@@ -91,13 +116,21 @@ const Checkout = () => {
       toast.error("Your cart is empty");
       return;
     }
-    await dispatch(
+
+    const success = await dispatch(
       orderItem({
         ...data,
         products: productData,
         totalAmount: total,
       })
     );
+
+    if (success.success) {
+      toast.success("Order placed successfully");
+      navigate("/products");
+    } else {
+      toast.error("Failed to place order");
+    }
   };
 
   useEffect(() => {

@@ -13,12 +13,18 @@ export interface IProduct {
   updatedAt: string;
 }
 
+export enum OrderStatus {
+  Preparation = "preparation",
+  Ontheway = "ontheway",
+  Delivered = "delivered",
+  Pending = "pending",
+  Cancelled = "cancelled",
+}
 
 export interface Ipayment {
   paymenStatus: string;
   paymentMethod: paymentMethod;
 }
-
 
 export interface IOrderDetail {
   id: string;
@@ -29,7 +35,6 @@ export interface IOrderDetail {
   updatedAt: string;
   Product: IProduct;
   Order: IOrderProduct;
-    
 }
 
 export interface IOrderProduct {

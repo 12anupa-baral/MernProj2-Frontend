@@ -16,6 +16,10 @@ import ContactUs from "./pages/contact/ContactUs";
 import PageNotFound from "./pages/PageNotFound";
 import MyOrders from "./pages/orders/MyOrders";
 import OrderDetails from "./pages/orderdetails/OrderDetails";
+import Admindashboard from "./pages/admin/AdminLayout";
+import Categories from "./pages/admin/categories/Categories";
+import Index from "./pages/admin/AdminLayout";
+import AdminStats from "./pages/admin/stats/AdminStats";
 
 function App() {
   return (
@@ -36,6 +40,10 @@ function App() {
             <Route path="/myorder/:id" element={<OrderDetails />} />
           </Route>
           <Route path="*" element={<PageNotFound />} />
+          <Route element={<Admindashboard />}>
+            <Route path="/admin" element={<AdminStats />} />
+            <Route path="/admin/categories" element={<Categories />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </Provider>

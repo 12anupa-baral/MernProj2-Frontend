@@ -36,6 +36,14 @@ const MobileModal = ({ isOpen, toggleModal, isLoggedIn }: any) => {
           <Link className="navItems text-lg" to="/cart" onClick={toggleModal}>
             Cart
           </Link>
+
+          <Link
+            className="navItems text-lg"
+            to="/myorder"
+            onClick={toggleModal}
+          >
+            My Orders
+          </Link>
           <Link className="navItems text-lg" to="/about" onClick={toggleModal}>
             About Us
           </Link>
@@ -119,6 +127,9 @@ function Navbar() {
           </Link>
           <Link className="navItems" to="/cart">
             Cart
+          </Link>
+          <Link className="navItems" to="/myorder">
+            My Orders
           </Link>
           <Link className="navItems" to="/about">
             About Us

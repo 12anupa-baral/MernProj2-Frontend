@@ -78,7 +78,7 @@ export function loginUser(data:ILoginUser){
             if(response.status === 200){
                 dispatch(setStatus(Status.SUCCESS))
                 if(response.data.token){
-                    localStorage.setItem("tokenHoYo",response.data.token)
+                    localStorage.setItem("tokenHoYo", response.data.token);
                     dispatch(setToken(response.data.token))
                 }else{
                     dispatch(setStatus(Status.ERROR))

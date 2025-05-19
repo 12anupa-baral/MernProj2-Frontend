@@ -7,10 +7,8 @@ const Table = ({ data }: { data: ICategoryData[] }) => {
   const dispatch = useAppDispatch();
 
   const deleteCategory = async (id: string) => {
-    id && dispatch(handleCategoryDelete(id))
-    
+    id && dispatch(handleCategoryDelete(id));
   };
-
 
   return (
     <table className=" min-w-full rounded-xl">
@@ -48,7 +46,7 @@ const Table = ({ data }: { data: ICategoryData[] }) => {
           </th>
         </tr>
       </thead>
-      {data.length > 0 &&
+      {data?.length > 0 &&
         data.map((category) => {
           return (
             <tbody className="divide-y divide-gray-300 ">
@@ -90,4 +88,4 @@ const Table = ({ data }: { data: ICategoryData[] }) => {
   );
 };
 
-export default Table
+export default Table;
